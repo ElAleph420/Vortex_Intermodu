@@ -1,0 +1,14 @@
+La aplicación es un generador y gestor de contraseñas. Nuestros principales clientes son empresas que necesiten generar contraseñas seguras a cantidades grandes de empleados y personas que no tengan una gran capacidad para crear contraseñas lo suficientemente seguras y/o lo suficientemente recordables para su persona. 
+Vortex, la aplicación, tiene la posibilidad de darle a varias opciones para personalizar la contraseña a generar, entre ellas: Longitud de caracteres, si tiene teclas especiales, letras, números, mayúsculas y una palabra que deba haber sí o sí (por ejemplo, árbol). Es importante tener en cuenta que una misma contraseña puede estar asociada a varios servicios (véase Amazon, Teams, Netflix, Spotify...), pero que cada servicio puede tener una fecha de expiración para dicha contraseña (o no tenerlo). En caso de tener dicha fecha, el generador debe hacer un aviso de que va a expirar cuando falten 10 días, un último aviso el día anterior y luego ya sí pedir la contraseña nueva.
+El plan free permite almacenar hasta 10 contraseñas simultáneamente dentro del gestor, y este gestor solo permite almacenar contraseñas que hayan sido generadas con el generador de Vortex, además de tener una caducidad de seis meses. El plan estándar permite almacenar hasta 200 contraseñas, costando dinero mensualmente. El plan premium permite hasta medio terabyte de contraseñas.  
+
+La base de datos debe tener en cuenta lo siguiente: 
+	Entidades: Usuario (donde tiene los atributos dni como pk, email, nombre, contraseña_login y fecha de registro), contraseña (es la piedra angular, todas las entidades están asociadas a esta, sus atributos son id_contraseña, valor_crifrado, fecha_creacion y fecha_expiracion), plan (id del plan como pk y tipo de plan), y servicio (id del servicio y nombre del servicio).
+
+las tecnologías que debo usar:
+HTML para hacer la página del servicio.
+AWS.
+Docker para lanzar backend y frontend con una sola instancia.
+MySQL para la base de datos.
+Java con Springboot para montar la aplicación.
+PHP (posiblemente, si puede evitarse mejor).
