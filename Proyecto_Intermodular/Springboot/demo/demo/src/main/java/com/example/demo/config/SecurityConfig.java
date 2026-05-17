@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
             .authenticationManager(authManager)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/css/**").permitAll()
+                .requestMatchers("/", "/login", "/auth/**", "/registro/**", "/logout", "/error", "/css/**", "/logo.png", "/*.png", "/*.ico").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
             );

@@ -1,6 +1,7 @@
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/DemoApplication.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/config/SecurityConfig.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/controller/HomeController.java
+/home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/controller/RegistroController.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/model/Contrasenya.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/model/ContrasenyaServicio.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/model/ContrasenyaServicioId.java
@@ -12,3 +13,4 @@
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/repository/ServicioRepository.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/repository/UsuarioRepository.java
 /home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/service/UsuarioDetailsService.java
+/home/ramontxu/Escritorio/Vortex_Intermodu-main/Proyecto_Intermodular/Springboot/demo/demo/src/main/java/com/example/demo/service/UsuarioService.java

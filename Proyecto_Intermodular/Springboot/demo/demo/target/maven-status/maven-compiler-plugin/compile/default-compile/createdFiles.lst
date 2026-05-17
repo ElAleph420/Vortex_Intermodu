@@ -2,6 +2,8 @@ com/example/demo/repository/PlanRepository.class
 com/example/demo/model/ContrasenyaServicio.class
 com/example/demo/model/Servicio.class
 com/example/demo/service/UsuarioDetailsService.class
+com/example/demo/controller/RegistroController.class
+com/example/demo/service/UsuarioService.class
 com/example/demo/repository/ServicioRepository.class
 com/example/demo/DemoApplication.class
 com/example/demo/model/ContrasenyaServicioId.class
