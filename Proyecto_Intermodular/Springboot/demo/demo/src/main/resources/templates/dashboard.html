@@ -27,6 +27,9 @@
 
             <div id="alertaGenerador" class="alerta alerta-error"></div>
             <div id="alertaGuardar"   class="alerta alerta-exito"></div>
+            <div id="avisoPlanFree"   class="alerta alerta-aviso" style="display:none">
+                ⚠ Tu plan gratuito te obliga a guardar contraseñas generadas por Vortex. No puedes guardar una contraseña que no hayas generado aquí.
+            </div>
 
             <div class="generador-grid">
 
@@ -85,12 +88,10 @@
                         <div class="guardar-fila">
                             <div class="campo">
                                 <label>Servicio</label>
-                                <select id="selServicio">
-                                    <option value="">— Sin servicio —</option>
-                                </select>
+                                <input type="text" id="txtServicio" placeholder="Ej: Gmail, Netflix...">
                             </div>
                             <div class="campo">
-                                <label>Fecha de expiración</label>
+                                <label>Fecha de expiración <span style="font-weight:normal;font-style:italic">(opcional)</span></label>
                                 <input type="date" id="fechaExp">
                             </div>
                             <button class="btn btn-primario" onclick="guardar()">Guardar</button>
@@ -135,10 +136,24 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
 
+let esPlanFree = false;
+let contrasenyaGenerada = false;
+
 document.addEventListener('DOMContentLoaded', () => {
-    cargarServicios();
+    cargarPlan();
     cargarGestor();
 });
+
+async function cargarPlan() {
+    try {
+        const res  = await fetch('/api/contrasenya/plan');
+        const data = await res.json();
+        esPlanFree = (data.plan === 'free');
+        if (esPlanFree) {
+            document.getElementById('avisoPlanFree').style.display = 'block';
+        }
+    } catch (e) {}
+}
 
 function sincronizar(val) {
     document.getElementById('lonRange').value          = val;
@@ -148,6 +163,7 @@ function sincronizar(val) {
 
 async function generar() {
     ocultarAlertas();
+    contrasenyaGenerada = false;
     const params = new URLSearchParams({
         longitud:   document.getElementById('lonNum').value,
         mayusculas: document.getElementById('chkMay').checked,
@@ -167,6 +183,7 @@ async function generar() {
         btn.style.display = 'inline-block';
         btn.textContent   = 'Copiar';
         btn.classList.remove('copiado');
+        contrasenyaGenerada = true;
     } catch (e) {
         mostrarAlerta('alertaGenerador', 'error', 'Error de red. Inténtalo de nuevo.');
     }
@@ -188,41 +205,41 @@ function toggleGuardar() {
     document.getElementById('guardarContenido').classList.toggle('visible');
 }
 
-async function cargarServicios() {
-    try {
-        const res  = await fetch('/api/contrasenya/servicios');
-        const data = await res.json();
-        const sel  = document.getElementById('selServicio');
-        data.forEach(s => {
-            const opt = document.createElement('option');
-            opt.value       = s.idServicio;
-            opt.textContent = s.nombre;
-            sel.appendChild(opt);
-        });
-    } catch (e) {}
-}
-
 async function guardar() {
     ocultarAlertas();
+
     const valor = document.getElementById('resultadoTexto').textContent;
+
     if (!valor || valor.includes('Pulsa')) {
         mostrarAlerta('alertaGenerador', 'error', 'Primero genera una contraseña.');
         return;
     }
+
+    if (esPlanFree && !contrasenyaGenerada) {
+        mostrarAlerta('alertaGenerador', 'error', 'Con el plan gratuito solo puedes guardar contraseñas generadas por Vortex.');
+        return;
+    }
+
     const body = {
         valor:           valor,
-        idServicio:      document.getElementById('selServicio').value || null,
-        fechaExpiracion: document.getElementById('fechaExp').value    || null
+        nombreServicio:  document.getElementById('txtServicio').value.trim() || null,
+        fechaExpiracion: document.getElementById('fechaExp').value || null
     };
+
     try {
         const res  = await fetch('/api/contrasenya/guardar', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
         });
         const data = await res.json();
         if (!res.ok) { mostrarAlerta('alertaGenerador', 'error', data.error || 'No se pudo guardar.'); return; }
         mostrarAlerta('alertaGuardar', 'exito', '✓ Contraseña guardada correctamente.');
         document.getElementById('guardarToggle').classList.remove('abierto');
         document.getElementById('guardarContenido').classList.remove('visible');
+        document.getElementById('txtServicio').value = '';
+        document.getElementById('fechaExp').value    = '';
+        contrasenyaGenerada = false;
         cargarGestor();
     } catch (e) {
         mostrarAlerta('alertaGenerador', 'error', 'Error de red al guardar.');
