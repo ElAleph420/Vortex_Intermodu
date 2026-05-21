@@ -28,7 +28,7 @@
             <div id="alertaGenerador" class="alerta alerta-error"></div>
             <div id="alertaGuardar"   class="alerta alerta-exito"></div>
             <div id="avisoPlanFree"   class="alerta alerta-aviso" style="display:none">
-                ⚠ Tu plan gratuito te obliga a guardar contraseñas generadas por Vortex. No puedes guardar una contraseña que no hayas generado aquí.
+                ⚠ Tu plan gratuito te obliga a guardar contraseñas generadas por Vortex. No puedes guardar una contraseña escrita manualmente.
             </div>
 
             <div class="generador-grid">
@@ -79,24 +79,76 @@
                     <button class="btn btn-secundario" onclick="generar()">Regenerar</button>
                 </div>
 
-                <div class="guardar-panel">
-                    <button class="guardar-toggle" id="guardarToggle" onclick="toggleGuardar()">
-                        Guardar esta contraseña en el gestor
+                <!-- PANEL FREE: solo contraseña generada -->
+                <div class="guardar-panel" id="panelFree" style="display:none">
+                    <button class="guardar-toggle" id="guardarToggleFree" onclick="togglePanel('Free')">
+                        Guardar contraseña generada
                         <span class="flecha">▼</span>
                     </button>
-                    <div class="guardar-contenido" id="guardarContenido">
+                    <div class="guardar-contenido" id="guardarContenidoFree">
                         <div class="guardar-fila">
                             <div class="campo">
                                 <label>Servicio</label>
-                                <input type="text" id="txtServicio" placeholder="Ej: Gmail, Netflix...">
+                                <input type="text" id="txtServicioFree" placeholder="Ej: Gmail, Netflix...">
                             </div>
                             <div class="campo">
                                 <label>Fecha de expiración <span style="font-weight:normal;font-style:italic">(opcional)</span></label>
-                                <input type="date" id="fechaExp">
+                                <input type="date" id="fechaExpFree">
                             </div>
-                            <button class="btn btn-primario" onclick="guardar()">Guardar</button>
+                            <button class="btn btn-primario" onclick="guardarGenerada('Free')">Guardar</button>
                         </div>
                     </div>
+                </div>
+
+                <!-- PANELES NO-FREE: dos desplegables -->
+                <div id="panelsNofree" style="display:none; grid-column:1/-1; flex-direction:column; gap:12px">
+
+                    <!-- Opción 1: guardar generada -->
+                    <div class="guardar-panel">
+                        <button class="guardar-toggle" id="guardarToggleGen" onclick="togglePanel('Gen')">
+                            Guardar contraseña generada
+                            <span class="flecha">▼</span>
+                        </button>
+                        <div class="guardar-contenido" id="guardarContenidoGen">
+                            <div class="guardar-fila">
+                                <div class="campo">
+                                    <label>Servicio</label>
+                                    <input type="text" id="txtServicioGen" placeholder="Ej: Gmail, Netflix...">
+                                </div>
+                                <div class="campo">
+                                    <label>Fecha de expiración <span style="font-weight:normal;font-style:italic">(opcional)</span></label>
+                                    <input type="date" id="fechaExpGen">
+                                </div>
+                                <button class="btn btn-primario" onclick="guardarGenerada('Gen')">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opción 2: guardar a mano -->
+                    <div class="guardar-panel">
+                        <button class="guardar-toggle" id="guardarToggleMan" onclick="togglePanel('Man')">
+                            Guardar contraseña a mano
+                            <span class="flecha">▼</span>
+                        </button>
+                        <div class="guardar-contenido" id="guardarContenidoMan">
+                            <div class="guardar-fila guardar-fila-manual">
+                                <div class="campo">
+                                    <label>Contraseña</label>
+                                    <input type="text" id="txtContrasenyaMan" placeholder="Escribe tu contraseña...">
+                                </div>
+                                <div class="campo">
+                                    <label>Servicio</label>
+                                    <input type="text" id="txtServicioMan" placeholder="Ej: Gmail, Netflix...">
+                                </div>
+                                <div class="campo">
+                                    <label>Fecha de expiración <span style="font-weight:normal;font-style:italic">(opcional)</span></label>
+                                    <input type="date" id="fechaExpMan">
+                                </div>
+                                <button class="btn btn-primario" onclick="guardarManual()">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -144,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarGestor();
 });
 
+// ── Plan ──────────────────────────────────────────────
 async function cargarPlan() {
     try {
         const res  = await fetch('/api/contrasenya/plan');
@@ -151,16 +204,23 @@ async function cargarPlan() {
         esPlanFree = (data.plan === 'free');
         if (esPlanFree) {
             document.getElementById('avisoPlanFree').style.display = 'block';
+            document.getElementById('panelFree').style.display = 'block';
+        } else {
+            const div = document.getElementById('panelsNofree');
+            div.style.display    = 'flex';
+            div.style.gridColumn = '1 / -1';
         }
     } catch (e) {}
 }
 
+// ── Sincronizar slider ────────────────────────────────
 function sincronizar(val) {
     document.getElementById('lonRange').value          = val;
     document.getElementById('lonNum').value            = val;
     document.getElementById('sliderValor').textContent = val;
 }
 
+// ── Generar ───────────────────────────────────────────
 async function generar() {
     ocultarAlertas();
     contrasenyaGenerada = false;
@@ -189,6 +249,7 @@ async function generar() {
     }
 }
 
+// ── Copiar ────────────────────────────────────────────
 function copiar() {
     const val = document.getElementById('resultadoTexto').textContent;
     if (!val || val.includes('Pulsa')) return;
@@ -200,21 +261,21 @@ function copiar() {
     });
 }
 
-function toggleGuardar() {
-    document.getElementById('guardarToggle').classList.toggle('abierto');
-    document.getElementById('guardarContenido').classList.toggle('visible');
+// ── Toggles de paneles ────────────────────────────────
+function togglePanel(sufijo) {
+    document.getElementById('guardarToggle'    + sufijo).classList.toggle('abierto');
+    document.getElementById('guardarContenido' + sufijo).classList.toggle('visible');
 }
 
-async function guardar() {
+// ── Guardar contraseña GENERADA ───────────────────────
+async function guardarGenerada(sufijo) {
     ocultarAlertas();
 
     const valor = document.getElementById('resultadoTexto').textContent;
-
     if (!valor || valor.includes('Pulsa')) {
         mostrarAlerta('alertaGenerador', 'error', 'Primero genera una contraseña.');
         return;
     }
-
     if (esPlanFree && !contrasenyaGenerada) {
         mostrarAlerta('alertaGenerador', 'error', 'Con el plan gratuito solo puedes guardar contraseñas generadas por Vortex.');
         return;
@@ -222,10 +283,32 @@ async function guardar() {
 
     const body = {
         valor:           valor,
-        nombreServicio:  document.getElementById('txtServicio').value.trim() || null,
-        fechaExpiracion: document.getElementById('fechaExp').value || null
+        nombreServicio:  document.getElementById('txtServicio' + sufijo).value.trim() || null,
+        fechaExpiracion: document.getElementById('fechaExp'    + sufijo).value || null
     };
+    await enviarGuardar(body, sufijo);
+}
 
+// ── Guardar contraseña MANUAL ─────────────────────────
+async function guardarManual() {
+    ocultarAlertas();
+
+    const valor = document.getElementById('txtContrasenyaMan').value.trim();
+    if (!valor) {
+        mostrarAlerta('alertaGenerador', 'error', 'Escribe una contraseña antes de guardar.');
+        return;
+    }
+
+    const body = {
+        valor:           valor,
+        nombreServicio:  document.getElementById('txtServicioMan').value.trim() || null,
+        fechaExpiracion: document.getElementById('fechaExpMan').value || null
+    };
+    await enviarGuardar(body, 'Man');
+}
+
+// ── Llamada común al API ──────────────────────────────
+async function enviarGuardar(body, sufijo) {
     try {
         const res  = await fetch('/api/contrasenya/guardar', {
             method: 'POST',
@@ -235,17 +318,25 @@ async function guardar() {
         const data = await res.json();
         if (!res.ok) { mostrarAlerta('alertaGenerador', 'error', data.error || 'No se pudo guardar.'); return; }
         mostrarAlerta('alertaGuardar', 'exito', '✓ Contraseña guardada correctamente.');
-        document.getElementById('guardarToggle').classList.remove('abierto');
-        document.getElementById('guardarContenido').classList.remove('visible');
-        document.getElementById('txtServicio').value = '';
-        document.getElementById('fechaExp').value    = '';
-        contrasenyaGenerada = false;
+        // Cerrar el panel y limpiar
+        document.getElementById('guardarToggle'    + sufijo).classList.remove('abierto');
+        document.getElementById('guardarContenido' + sufijo).classList.remove('visible');
+        if (sufijo === 'Man') {
+            document.getElementById('txtContrasenyaMan').value = '';
+            document.getElementById('txtServicioMan').value    = '';
+            document.getElementById('fechaExpMan').value       = '';
+        } else {
+            document.getElementById('txtServicio' + sufijo).value = '';
+            document.getElementById('fechaExp'    + sufijo).value = '';
+            contrasenyaGenerada = false;
+        }
         cargarGestor();
     } catch (e) {
         mostrarAlerta('alertaGenerador', 'error', 'Error de red al guardar.');
     }
 }
 
+// ── Gestor ────────────────────────────────────────────
 async function cargarGestor() {
     const tbody = document.getElementById('tbodyGestor');
     try {
@@ -269,6 +360,7 @@ async function cargarGestor() {
     }
 }
 
+// ── Helpers ───────────────────────────────────────────
 function badge(estado) {
     const m = {
         'activa':        ['badge-activa',   'Activa'],
