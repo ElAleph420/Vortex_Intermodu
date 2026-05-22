@@ -1,0 +1,33 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: 'Georgia', 'Garamond', serif; background-color: #2c3e50; min-height: 100vh; display: flex; flex-direction: column; }
+
+header { display: flex; justify-content: space-between; align-items: center; padding: 30px 60px; background-color: #1a252f; }
+
+.lang-selector { display: flex; align-items: center; gap: 12px; }
+
+.lang-link { font-size: 17px; color: #e8e8d8; text-decoration: none; font-weight: bold; letter-spacing: 1px; transition: color 0.3s; }
+.lang-link:hover { color: #c9a961; }
+.lang-active { color: #c9a961; border-bottom: 2px solid #c9a961; padding-bottom: 2px; }
+
+.lang-sep { color: #e8e8d8; font-size: 17px; opacity: 0.5; }
+
+.contenedor { flex: 1; display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
+
+.tarjeta { background-color: #e8e8d8; border: 3px solid #1a252f; border-radius: 25px; padding: 60px 50px; width: 520px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+h2 { font-size: 26px; color: #1a252f; text-transform: uppercase; letter-spacing: 3px; }
+
+.separador { width: 100%; height: 2px; background: linear-gradient(to right, transparent, #1a252f 20%, #1a252f 80%, transparent); }
+
+.mensaje { font-size: 17px; color: #2c3e50; line-height: 1.8; font-style: italic; }
+
+.submensaje { font-size: 15px; color: #2c3e50; line-height: 1.8; }
+
+.btn-kickstarter { display: inline-block; margin-top: 10px; padding: 14px 40px; background-color: #05ce78; color: #fff; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: bold; letter-spacing: 1px; transition: background 0.3s; }
+.btn-kickstarter:hover { background-color: #04b568; }
+
+.btn-volver { font-size: 14px; color: #1a252f; text-decoration: none; font-style: italic; opacity: 0.7; transition: opacity 0.3s; }
+.btn-volver:hover { opacity: 1; }
+
+footer { text-align: center; padding: 30px 20px; font-size: 18px; font-weight: bold; color: #e8e8d8; background-color: #1a252f; }

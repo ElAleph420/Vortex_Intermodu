@@ -20,6 +20,14 @@ header {
     background-color: #1a252f;
 }
 
+.lang-selector { display: flex; align-items: center; gap: 12px; }
+
+.lang-link { font-size: 17px; color: #e8e8d8; text-decoration: none; font-weight: bold; letter-spacing: 1px; transition: color 0.3s; }
+.lang-link:hover { color: #c9a961; }
+.lang-active { color: #c9a961; border-bottom: 2px solid #c9a961; padding-bottom: 2px; }
+
+.lang-sep { color: #e8e8d8; font-size: 17px; opacity: 0.5; }
+
 .logo {
     width: 120px;
     height: auto;

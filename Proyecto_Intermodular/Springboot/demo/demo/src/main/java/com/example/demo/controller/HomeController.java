@@ -13,6 +13,11 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/en")
+    public String en() {
+        return "en";
+    }
+
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String plan, Model model) {
         if (plan != null) model.addAttribute("plan", plan);
