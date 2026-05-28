@@ -35,7 +35,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: toor
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+<<<<<<< HEAD
 
+=======
+      SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: "true"
+>>>>>>> 3f66134 (Docker-compose y app properties aplicados)
   nginx:
     image: nginx:alpine
     container_name: vortex-nginx
